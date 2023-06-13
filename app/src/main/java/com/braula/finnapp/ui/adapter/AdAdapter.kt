@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.braula.finnapp.data.model.Ad
+import com.braula.finnapp.domain.model.Ad
 import com.braula.finnapp.databinding.AdItemBinding
 
 class AdAdapter: ListAdapter<Ad, AdAdapter.AdViewHolder>(DIFF_UTIL_CALLBACK) {

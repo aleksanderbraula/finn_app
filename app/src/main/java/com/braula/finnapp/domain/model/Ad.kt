@@ -1,4 +1,4 @@
-package com.braula.finnapp.data.model
+package com.braula.finnapp.domain.model
 
 data class Ad(
     val id: String,

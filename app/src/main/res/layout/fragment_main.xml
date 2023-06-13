@@ -6,6 +6,28 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/loadingView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/loading_background"
+            android:orientation="vertical"
+            android:elevation="5dp"
+            android:gravity="center">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@android:style/Widget.ProgressBar.Large"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loading"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
             android:id="@+id/navBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/topBarHeight"
