@@ -16,6 +16,9 @@ buildscript {
     ext.retrofit_version = '2.9.0'
     ext.gson_version = '2.10'
     ext.okHttp_version = '5.0.0-alpha.10'
+
+    //glide
+    ext.glide_version = '4.14.2'
 }
 
 plugins {

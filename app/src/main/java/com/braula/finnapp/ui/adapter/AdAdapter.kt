@@ -1,13 +1,14 @@
 package com.braula.finnapp.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.braula.finnapp.domain.model.Ad
+import com.braula.finnapp.R
 import com.braula.finnapp.databinding.AdItemBinding
+import com.braula.finnapp.domain.model.Ad
+import com.bumptech.glide.Glide
 
 class AdAdapter: ListAdapter<Ad, AdAdapter.AdViewHolder>(DIFF_UTIL_CALLBACK) {
 
@@ -27,6 +28,8 @@ class AdAdapter: ListAdapter<Ad, AdAdapter.AdViewHolder>(DIFF_UTIL_CALLBACK) {
                 return oldItem.areContentsTheSame() == newItem.areContentsTheSame()
             }
         }
+
+        const val BASE_IMAGE_URL = "https://images.finncdn.no/dynamic/480x360c/"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdViewHolder {
@@ -36,7 +39,14 @@ class AdAdapter: ListAdapter<Ad, AdAdapter.AdViewHolder>(DIFF_UTIL_CALLBACK) {
 
     override fun onBindViewHolder(holder: AdViewHolder, position: Int) {
         with(holder.binding) {
+            val view = this.root
             with(getItem(position)) {
+                Glide
+                    .with(view)
+                    .load("${BASE_IMAGE_URL}${this.imageSuffix}")
+                    .placeholder(R.drawable.ic_placeholder)
+                    .into(image)
+
                 titleText.text = title ?: "<No title>"
                 priceText.text = (price ?: 0).toString()
                 locationText.text = location ?: "<No location>"
