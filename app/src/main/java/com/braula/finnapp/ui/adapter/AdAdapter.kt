@@ -2,6 +2,8 @@ package com.braula.finnapp.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -33,8 +35,16 @@ class AdAdapter(private val favoriteCallback: FavoriteCallback): ListAdapter<Ad,
         const val BASE_IMAGE_URL = "https://images.finncdn.no/dynamic/480x360c/"
     }
 
-    var showAll = true
     private val favoriteIds = arrayListOf<String>()
+    private val ads = arrayListOf<Ad>()
+
+    fun submitAds(ads: List<Ad>) {
+        this.ads.apply {
+            clear()
+            addAll(ads)
+            submitList(ads)
+        }
+    }
 
     fun submitFavoriteIds(favoriteIds: List<String>) {
         this.favoriteIds.apply {
@@ -56,8 +66,8 @@ class AdAdapter(private val favoriteCallback: FavoriteCallback): ListAdapter<Ad,
     override fun onBindViewHolder(holder: AdViewHolder, position: Int) {
         with(holder.binding) {
             val view = this.root
-            view visibility showAll
             with(getItem(position)) {
+                val isFavorite = favoriteIds.contains(this.id)
                 Glide
                     .with(view)
                     .load("${BASE_IMAGE_URL}${this.imageSuffix}")
@@ -68,7 +78,7 @@ class AdAdapter(private val favoriteCallback: FavoriteCallback): ListAdapter<Ad,
                 priceText.text = price.toString()
                 locationText.text = location ?: "<No location>"
 
-                favoriteCheckBox.isChecked = favoriteIds.contains(this.id)
+                favoriteCheckBox.isChecked = isFavorite
                 favoriteCheckBox.setOnCheckedChangeListener { button, state ->
                     if (button.isShown) {
                         this.isFavorite = state
@@ -83,6 +93,15 @@ class AdAdapter(private val favoriteCallback: FavoriteCallback): ListAdapter<Ad,
                 }
             }
         }
+    }
+
+    fun showOnlyFavorites() {
+        val filtered = ads.filter { favoriteIds.contains(it.id) }
+        submitList(filtered)
+    }
+
+    fun showAll() {
+        submitList(ads)
     }
 
     inner class AdViewHolder(

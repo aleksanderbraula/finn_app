@@ -13,17 +13,5 @@ data class Ad(
     fun areContentsTheSame(): String  {
         return id + imageSuffix + title + price + location
     }
-
-
 }
-
-fun Ad.mapToEntity(): AdEntity =
-    AdEntity(
-        id = this.id,
-        imageSuffix = this.imageSuffix,
-        title = this.title,
-        price = this.price,
-        location = this.location,
-        isFavorite = this.isFavorite
-    )
 

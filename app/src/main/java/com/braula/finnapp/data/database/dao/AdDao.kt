@@ -16,4 +16,7 @@ interface AdDao {
 
     @Query("SELECT id FROM ads")
     suspend fun getIds(): List<String>
+
+    @Query("SELECT * FROM ads")
+    suspend fun getAll(): List<AdEntity>
 }

@@ -4,18 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.braula.finnapp.R
 import com.braula.finnapp.databinding.FragmentMainBinding
 import com.braula.finnapp.domain.model.Ad
 import com.braula.finnapp.ui.adapter.AdAdapter
+import com.braula.finnapp.utils.isNetworkAvailable
 import com.braula.finnapp.utils.visibility
 import com.braula.finnapp.viewmodel.AdViewModel
 import com.braula.finnapp.viewmodel.AdViewState
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,6 +30,8 @@ class MainFragment: Fragment() {
     private val viewModel: AdViewModel by viewModels()
 
     private lateinit var adAdapter: AdAdapter
+
+    private lateinit var snackbar: Snackbar
 
     private val favoriteCallback = object : AdAdapter.FavoriteCallback {
         override fun onFavoriteAdded(ad: Ad) {
@@ -50,14 +56,21 @@ class MainFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setupListView()
+        setupSnackbar()
         initObservers()
+        if (!requireContext().isNetworkAvailable()) {
+            //showNetworkWarning()
+        }
         viewModel.loadAds()
     }
 
     private fun setupView() {
         binding.favoritesToggle.setOnCheckedChangeListener { _, state ->
-            adAdapter.showAll = !state
-            adAdapter.notifyDataSetChanged()
+            if (state) {
+                adAdapter.showOnlyFavorites()
+            } else {
+                adAdapter.showAll()
+            }
         }
     }
 
@@ -68,6 +81,10 @@ class MainFragment: Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = adAdapter
         }
+    }
+
+    private fun setupSnackbar() {
+        snackbar = Snackbar.make(requireView(), R.string.no_internet, Snackbar.LENGTH_INDEFINITE)
     }
 
     private fun initObservers() {
@@ -85,7 +102,15 @@ class MainFragment: Fragment() {
 
         if (!uiViewState.isLoading) {
             adAdapter.submitFavoriteIds(uiViewState.favoriteIds)
-            adAdapter.submitList(uiViewState.ads)
+            adAdapter.submitAds(uiViewState.ads)
         }
+    }
+
+    private fun showNetworkWarning() {
+        snackbar.show()
+    }
+
+    private fun hideNetworkWarning() {
+        snackbar.dismiss()
     }
 }
