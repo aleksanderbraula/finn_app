@@ -1,5 +1,6 @@
 package com.braula.finnapp.viewmodel
 
+import android.os.SystemClock
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.braula.finnapp.domain.model.Ad
@@ -31,6 +32,7 @@ class AdViewModel @Inject constructor(
                     isLoading = true
                 )
             }
+
             loadAdsUseCase.invoke().catch { throwable ->
                 throwable.printStackTrace()
             }.collect { (ads, favoriteIds) ->

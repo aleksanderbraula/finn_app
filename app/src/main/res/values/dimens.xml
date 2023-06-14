@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="topBarHeight">60dp</dimen>
+    <dimen name="top_bar_height">64dp</dimen>
+
+    <dimen name="padding_4">4dp</dimen>
     <dimen name="padding_12">12dp</dimen>
+    <dimen name="padding_24">24dp</dimen>
+
+    <dimen name="text_size_16">16sp</dimen>
+    <dimen name="text_size_24">24sp</dimen>
+
+    <dimen name="corner_radius_16">16dp</dimen>
+    <dimen name="image_size">256dp</dimen>
 </resources>

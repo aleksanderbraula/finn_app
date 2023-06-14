@@ -1,5 +1,11 @@
 <resources>
-    <string name="app_name">FinnApp</string>
+    <string name="app_name">Finn Demo App</string>
     <string name="loading">Loading</string>
     <string name="no_internet">No internet connections. Showing only favorite ads.</string>
+    <string name="try_again">Try Again</string>
+    <string name="no_title">&lt;No title&gt;</string>
+    <string name="no_location">&lt;No location&gt;</string>
+    <string name="show_only_favorites">Show only favorites:</string>
+    <string name="no_items">No items</string>
+    <string name="price_format">%d kr</string>
 </resources>

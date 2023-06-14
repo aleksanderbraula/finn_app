@@ -12,6 +12,7 @@ import com.braula.finnapp.databinding.AdItemBinding
 import com.braula.finnapp.domain.model.Ad
 import com.braula.finnapp.utils.visibility
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class AdAdapter(private val favoriteCallback: FavoriteCallback): ListAdapter<Ad, AdAdapter.AdViewHolder>(DIFF_UTIL_CALLBACK) {
 
@@ -71,12 +72,13 @@ class AdAdapter(private val favoriteCallback: FavoriteCallback): ListAdapter<Ad,
                 Glide
                     .with(view)
                     .load("${BASE_IMAGE_URL}${this.imageSuffix}")
+                    .transform(RoundedCorners(view.resources.getDimensionPixelSize(R.dimen.corner_radius_16)))
                     .placeholder(R.drawable.ic_placeholder)
                     .into(image)
 
-                titleText.text = title ?: "<No title>"
-                priceText.text = price.toString()
-                locationText.text = location ?: "<No location>"
+                titleText.text = title ?: view.resources.getString(R.string.no_title)
+                priceText.text = String.format(view.resources.getString(R.string.price_format), price)
+                locationText.text = location ?: view.resources.getString(R.string.no_location)
 
                 favoriteCheckBox.isChecked = isFavorite
                 favoriteCheckBox.setOnCheckedChangeListener { button, state ->

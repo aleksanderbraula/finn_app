@@ -1,6 +1,7 @@
 package com.braula.finnapp.ui
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.braula.finnapp.R
 import com.braula.finnapp.databinding.FragmentMainBinding
@@ -30,8 +32,6 @@ class MainFragment: Fragment() {
     private val viewModel: AdViewModel by viewModels()
 
     private lateinit var adAdapter: AdAdapter
-
-    private lateinit var snackbar: Snackbar
 
     private val favoriteCallback = object : AdAdapter.FavoriteCallback {
         override fun onFavoriteAdded(ad: Ad) {
@@ -56,10 +56,14 @@ class MainFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setupListView()
-        setupSnackbar()
         initObservers()
-        if (!requireContext().isNetworkAvailable()) {
-            //showNetworkWarning()
+        loadData()
+    }
+
+    private fun loadData() {
+        val hasInternet = requireContext().isNetworkAvailable()
+        if (!hasInternet) {
+            showNetworkWarning()
         }
         viewModel.loadAds()
     }
@@ -77,14 +81,10 @@ class MainFragment: Fragment() {
     private fun setupListView() {
         adAdapter = AdAdapter(favoriteCallback)
 
-        binding.adListView.apply {
-            layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.apply {
+            layoutManager = GridLayoutManager(context, 2)
             adapter = adAdapter
         }
-    }
-
-    private fun setupSnackbar() {
-        snackbar = Snackbar.make(requireView(), R.string.no_internet, Snackbar.LENGTH_INDEFINITE)
     }
 
     private fun initObservers() {
@@ -98,19 +98,25 @@ class MainFragment: Fragment() {
     }
 
     private fun handleViewState(uiViewState: AdViewState) {
-        binding.loadingView visibility uiViewState.isLoading
+        with(binding) {
+            loadingView visibility uiViewState.isLoading
 
-        if (!uiViewState.isLoading) {
-            adAdapter.submitFavoriteIds(uiViewState.favoriteIds)
-            adAdapter.submitAds(uiViewState.ads)
+            if (!uiViewState.isLoading) {
+                val hasAds = uiViewState.ads.isEmpty()
+                emptyText visibility hasAds
+                recyclerView visibility !hasAds
+
+                adAdapter.submitFavoriteIds(uiViewState.favoriteIds)
+                adAdapter.submitAds(uiViewState.ads)
+            }
         }
     }
 
     private fun showNetworkWarning() {
-        snackbar.show()
-    }
-
-    private fun hideNetworkWarning() {
-        snackbar.dismiss()
+        Snackbar
+            .make(requireActivity().findViewById(android.R.id.content), R.string.no_internet, Snackbar.LENGTH_INDEFINITE)
+            .setAction(resources.getString(R.string.try_again)) {
+                loadData()
+            }.show()
     }
 }
