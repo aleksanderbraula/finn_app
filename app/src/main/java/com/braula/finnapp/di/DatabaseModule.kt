@@ -1,8 +1,8 @@
 package com.braula.finnapp.di
 
-import android.app.Application
 import android.content.Context
 import com.braula.finnapp.data.database.AppDatabase
+import com.braula.finnapp.data.database.dao.AdDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,8 +11,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class AppModule {
+class DatabaseModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context = application
+    fun provideDatabase(context: Context): AppDatabase {
+        return AppDatabase.getDbInstance(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideEquipmentDao(appDatabase: AppDatabase): AdDao {
+        return appDatabase.adDao()
+    }
 }

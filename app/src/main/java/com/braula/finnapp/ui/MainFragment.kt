@@ -11,11 +11,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.braula.finnapp.databinding.FragmentMainBinding
+import com.braula.finnapp.domain.model.Ad
 import com.braula.finnapp.ui.adapter.AdAdapter
+import com.braula.finnapp.utils.visibility
 import com.braula.finnapp.viewmodel.AdViewModel
 import com.braula.finnapp.viewmodel.AdViewState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -25,6 +26,16 @@ class MainFragment: Fragment() {
     private val viewModel: AdViewModel by viewModels()
 
     private lateinit var adAdapter: AdAdapter
+
+    private val favoriteCallback = object : AdAdapter.FavoriteCallback {
+        override fun onFavoriteAdded(ad: Ad) {
+            viewModel.addAdToFavorites(ad)
+        }
+
+        override fun onFavoriteRemoved(id: String) {
+            viewModel.removeAdFromFavorites(id)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,9 +48,26 @@ class MainFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
         setupListView()
         initObservers()
         viewModel.loadAds()
+    }
+
+    private fun setupView() {
+        binding.favoritesToggle.setOnCheckedChangeListener { _, state ->
+            adAdapter.showAll = !state
+            adAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun setupListView() {
+        adAdapter = AdAdapter(favoriteCallback)
+
+        binding.adListView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = adAdapter
+        }
     }
 
     private fun initObservers() {
@@ -53,28 +81,11 @@ class MainFragment: Fragment() {
     }
 
     private fun handleViewState(uiViewState: AdViewState) {
-        if (uiViewState.isLoading) {
-            showLoading()
-        } else {
-            hideLoading()
-            adAdapter.submitList(uiViewState.adList)
-        }
-    }
+        binding.loadingView visibility uiViewState.isLoading
 
-    private fun showLoading() {
-        binding.loadingView.visibility = View.VISIBLE
-    }
-
-    private fun hideLoading() {
-        binding.loadingView.visibility = View.GONE
-    }
-
-    private fun setupListView() {
-        adAdapter = AdAdapter()
-
-        binding.adListView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = adAdapter
+        if (!uiViewState.isLoading) {
+            adAdapter.submitFavoriteIds(uiViewState.favoriteIds)
+            adAdapter.submitList(uiViewState.ads)
         }
     }
 }

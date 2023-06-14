@@ -1,7 +1,7 @@
 package com.braula.finnapp.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.braula.finnapp.R
 import dagger.hilt.android.AndroidEntryPoint
 

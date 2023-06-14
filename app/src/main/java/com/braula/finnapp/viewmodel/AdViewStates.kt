@@ -4,5 +4,6 @@ import com.braula.finnapp.domain.model.Ad
 
 data class AdViewState(
     val isLoading: Boolean = false,
-    val adList: List<Ad> = arrayListOf()
+    val ads: List<Ad> = arrayListOf(),
+    val favoriteIds: List<String> = arrayListOf()
 )
