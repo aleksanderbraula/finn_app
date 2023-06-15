@@ -22,6 +22,17 @@ buildscript {
 
     //database
     ext.room_version = '2.5.0'
+
+    //test
+    ext.junit_version = '4.13.2'
+    ext.arch_core_testing_version = '2.1.0'
+    ext.mockito_core_version = '4.8.1'
+    ext.mockito_kotlin_version = '2.2.0'
+    ext.robolectric_version = '4.9'
+    ext.espresso_core_version = '3.4.0'
+    ext.androidx_test_version = '1.5.0'
+    ext.androidx_test_version_junit = '1.1.3'
+    ext.mockito_android = '4.8.1'
 }
 
 plugins {
