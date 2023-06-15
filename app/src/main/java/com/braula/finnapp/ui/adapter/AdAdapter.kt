@@ -78,7 +78,7 @@ class AdAdapter(private val favoriteCallback: FavoriteCallback): ListAdapter<Ad,
 
                 titleText.text = title ?: view.resources.getString(R.string.no_title)
                 priceText.text = String.format(view.resources.getString(R.string.price_format), price)
-                locationText.text = location ?: view.resources.getString(R.string.no_location)
+                locationText.text = location ?: ""
 
                 favoriteCheckBox.isChecked = isFavorite
                 favoriteCheckBox.setOnCheckedChangeListener { button, state ->
